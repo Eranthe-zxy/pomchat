@@ -4,17 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Git-Backed Message Board</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700&family=Comfortaa:wght@300;400;500;600;700&family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --background-color: #FFE0E9;
-            --text-color: #333333;
-            --border-color: #FFB6C1;
-            --input-background: #FFFFFF;
-            --button-color: #9D7AFF;
-            --button-hover: #8A63FF;
-            --message-background: rgba(255, 255, 255, 0.95);
-            --message-shadow: 0 8px 24px rgba(255, 182, 193, 0.25);
-            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --rosy-light: #FFE4E1;  /* Misty Rose */
+            --rosy-medium: #FFB6C1; /* Light Pink */
+            --rosy-deep: #FF69B4;   /* Hot Pink */
+            --rosy-dark: #DB7093;   /* Pale Violet Red */
+            --rosy-shadow: rgba(219, 112, 147, 0.3); /* Pale Violet Red with opacity */
+            --font-heading: 'Baloo 2', cursive;
+            --font-body: 'Comfortaa', cursive;
+            --font-accent: 'Quicksand', sans-serif;
         }
 
         * {
@@ -24,49 +26,227 @@
         }
 
         body {
-            font-family: var(--font-family);
-            line-height: 1.6;
-            color: var(--text-color);
-            background-color: var(--background-color);
-            min-height: 100vh;
+            margin: 0;
             padding: 2rem;
+            min-height: 100vh;
+            font-family: var(--font-body);
+            font-weight: 400;
+            line-height: 1.6;
+            background: linear-gradient(135deg, var(--rosy-light), var(--rosy-medium));
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Rosy background patterns */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 20%, var(--rosy-deep) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, var(--rosy-dark) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, var(--rosy-medium) 0%, transparent 50%),
+                linear-gradient(45deg, rgba(255, 182, 193, 0.2) 25%, transparent 25%) 10px 0,
+                linear-gradient(-45deg, rgba(255, 182, 193, 0.2) 25%, transparent 25%) 10px 0;
+            background-size: 
+                50% 50%,
+                50% 50%,
+                100% 100%,
+                20px 20px,
+                20px 20px;
+            opacity: 0.4;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Floating hearts background */
+        .floating-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .heart {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: var(--rosy-medium);
+            transform: rotate(45deg);
+            animation: floatingHeart 20s linear infinite;
+            opacity: 0.3;
+        }
+
+        .heart::before,
+        .heart::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--rosy-medium);
+        }
+
+        .heart::before {
+            left: -10px;
+        }
+
+        .heart::after {
+            top: -10px;
+        }
+
+        /* Create multiple hearts with different positions and animations */
+        .heart:nth-child(1) { left: 10%; animation-delay: -2s; }
+        .heart:nth-child(2) { left: 30%; animation-delay: -4s; }
+        .heart:nth-child(3) { left: 50%; animation-delay: -6s; }
+        .heart:nth-child(4) { left: 70%; animation-delay: -8s; }
+        .heart:nth-child(5) { left: 90%; animation-delay: -10s; }
+
+        @keyframes floatingHeart {
+            0% {
+                transform: rotate(45deg) translate(0, -100vh);
+                opacity: 0;
+            }
+            20% {
+                opacity: 0.2;
+            }
+            80% {
+                opacity: 0.2;
+            }
+            100% {
+                transform: rotate(45deg) translate(0, 100vh);
+                opacity: 0;
+            }
+        }
+
+        /* Sparkle effect */
+        .sparkles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .sparkle-dot {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: var(--rosy-deep);
+            border-radius: 50%;
+            animation: twinkle 4s ease-in-out infinite;
+            box-shadow: 0 0 5px var(--rosy-light);
+        }
+
+        /* Create multiple sparkles */
+        .sparkle-dot:nth-child(1) { left: 15%; top: 20%; animation-delay: 0s; }
+        .sparkle-dot:nth-child(2) { left: 35%; top: 40%; animation-delay: -1s; }
+        .sparkle-dot:nth-child(3) { left: 55%; top: 60%; animation-delay: -2s; }
+        .sparkle-dot:nth-child(4) { left: 75%; top: 30%; animation-delay: -3s; }
+        .sparkle-dot:nth-child(5) { left: 85%; top: 70%; animation-delay: -1.5s; }
+
+        @keyframes twinkle {
+            0%, 100% {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.5);
+            }
         }
 
         .container {
+            position: relative;
             max-width: 800px;
             margin: 0 auto;
-            padding: 1rem;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 
+                0 8px 32px var(--rosy-shadow),
+                inset 0 0 32px rgba(255, 255, 255, 0.2);
+            border: 1px solid var(--rosy-light);
         }
 
         .message-form {
-            background: var(--message-background);
+            background: var(--rosy-medium);
             padding: 2rem;
             border-radius: 25px;
-            box-shadow: var(--message-shadow);
+            box-shadow: 
+                0 8px 32px var(--rosy-shadow),
+                inset 0 0 32px rgba(255, 255, 255, 0.2);
             margin-bottom: 2rem;
+            border: 3px solid var(--rosy-medium);
+            position: relative;
+            overflow: visible;
+            z-index: 1;
+        }
+
+        .message-form::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 30% 30%, #FFC1CC 20px, transparent 20px),
+                radial-gradient(circle at 70% 70%, #FFC1CC 20px, transparent 20px);
+            opacity: 0.1;
+            z-index: -1;
+            pointer-events: none;
         }
 
         .form-group {
+            position: relative;
             margin-bottom: 1.5rem;
+            z-index: 2;
         }
 
         label {
             display: block;
             margin-bottom: 0.5rem;
-            color: var(--text-color);
+            color: var(--rosy-dark);
+            font-family: var(--font-heading);
             font-weight: 500;
+            font-size: 1.1rem;
+            letter-spacing: 0.3px;
+            position: relative;
+            z-index: 2;
         }
 
         input[type="text"],
         textarea {
             width: 100%;
             padding: 1rem;
-            border: 2px solid var(--border-color);
+            border: 2px solid var(--rosy-light);
             border-radius: 15px;
-            background: var(--input-background);
+            background: rgba(255, 255, 255, 0.9);
+            font-family: var(--font-accent);
+            font-weight: 500;
             font-size: 1rem;
-            font-family: var(--font-family);
+            letter-spacing: 0.3px;
             transition: all 0.3s ease;
+            position: relative;
+            z-index: 2;
+            color: var(--rosy-dark);
+        }
+
+        input[type="text"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--rosy-medium);
+            box-shadow: 0 0 10px var(--rosy-shadow);
         }
 
         textarea {
@@ -74,164 +254,438 @@
             resize: vertical;
         }
 
-        input[type="text"]::placeholder {
-            color: #999;
+        input[type="text"]::placeholder,
+        textarea::placeholder {
+            color: var(--rosy-medium);
+            opacity: 0.7;
+            font-family: var(--font-accent);
+            font-weight: 400;
+            font-style: italic;
         }
 
-        input[type="text"]:focus,
-        textarea:focus {
-            outline: none;
-            border-color: var(--button-color);
-            box-shadow: 0 0 0 3px rgba(157, 122, 255, 0.2);
+        .error {
+            position: relative;
+            z-index: 2;
+            font-family: var(--font-body);
+            font-weight: 500;
         }
 
-        button {
-            background-color: var(--button-color);
+        button[type="submit"] {
+            background: linear-gradient(135deg, var(--rosy-medium), var(--rosy-deep));
             color: white;
+            padding: 0.8rem 1.5rem;
             border: none;
-            padding: 0.75rem 2rem;
             border-radius: 25px;
-            font-size: 1rem;
+            font-family: var(--font-heading);
             font-weight: 600;
+            font-size: 1.1rem;
+            letter-spacing: 0.5px;
             cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: visible;
+            box-shadow: 
+                0 4px 15px var(--rosy-shadow);
+        }
+
+        button[type="submit"]::before {
+            content: '🌸';
+            position: absolute;
+            left: 50%;
+            top: -24px;
+            transform: translateX(-50%);
+            font-size: 1.4rem;
+            opacity: 0.9;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
             transition: all 0.3s ease;
         }
 
-        button:hover {
-            background-color: var(--button-hover);
-            transform: translateY(-1px);
+        button[type="submit"]::after {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background: 
+                radial-gradient(circle at 20% 20%, #FFE6E6 2px, transparent 2px),
+                radial-gradient(circle at 80% 20%, #FFE6E6 2px, transparent 2px),
+                radial-gradient(circle at 50% 50%, #FFE6E6 2px, transparent 2px),
+                radial-gradient(circle at 20% 80%, #FFE6E6 2px, transparent 2px),
+                radial-gradient(circle at 80% 80%, #FFE6E6 2px, transparent 2px);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            z-index: -1;
         }
 
-        button:active {
-            transform: translateY(1px);
+        button[type="submit"]:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px var(--rosy-shadow);
+            background: linear-gradient(135deg, var(--rosy-deep), var(--rosy-dark));
         }
 
-        .messages {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
+        button[type="submit"]:hover::before {
+            transform: translateX(-50%) translateY(-2px);
+        }
+
+        button[type="submit"]:hover::after {
+            opacity: 0.6;
+            animation: floralSpark 1.5s ease-in-out infinite;
+        }
+
+        button[type="submit"]:active {
+            transform: translateY(2px);
+            box-shadow: 
+                0 2px 0 #FFCAD4,
+                0 4px 8px rgba(255, 182, 193, 0.2);
+        }
+
+        .submit-wrapper {
+            position: relative;
+            display: inline-block;
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+        }
+
+        .submit-wrapper::before,
+        .submit-wrapper::after {
+            content: '🌸';
+            position: absolute;
+            font-size: 1.2rem;
+            opacity: 0;
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+
+        .submit-wrapper::before {
+            top: -5px;
+            right: 10px;
+            transform: rotate(-30deg);
+        }
+
+        .submit-wrapper::after {
+            bottom: -15px;
+            left: 10px;
+            transform: rotate(30deg);
+        }
+
+        .submit-wrapper:hover::before,
+        .submit-wrapper:hover::after {
+            opacity: 1;
+            animation: floatFlower 2s ease-in-out infinite;
+        }
+
+        @keyframes floatFlower {
+            0%, 100% {
+                transform: translateY(0) rotate(30deg);
+            }
+            50% {
+                transform: translateY(-5px) rotate(40deg);
+            }
         }
 
         .message {
             position: relative;
-            background: var(--message-background);
-            padding: 1.5rem;
-            border-radius: 25px;
-            box-shadow: var(--message-shadow);
-            margin-left: 1rem;
+            width: 100%;
+            margin: 1rem 0;
+            animation: float 6s ease-in-out infinite;
         }
 
-        .message::before {
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+                box-shadow: 0 5px 15px var(--rosy-shadow);
+            }
+            50% {
+                transform: translateY(-10px);
+                box-shadow: 0 15px 25px var(--rosy-shadow);
+            }
+        }
+
+        .message-container {
+            position: relative;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 2rem;
+            border-radius: 50px;
+            box-shadow: 
+                15px 15px 35px var(--rosy-shadow),
+                inset -5px -5px 15px rgba(255, 182, 193, 0.1),
+                inset 5px 5px 15px rgba(255, 255, 255, 0.8);
+        }
+
+        /* Cloud bumps */
+        .message-container::before,
+        .message-container::after {
             content: '';
             position: absolute;
-            bottom: -15px;
-            left: 30px;
-            width: 30px;
-            height: 30px;
-            background: inherit;
-            border-radius: 5px;
-            transform: rotate(45deg);
-            box-shadow: var(--message-shadow);
-            z-index: -1;
+            background: #FFFFFF;
+            border-radius: 50%;
+        }
+
+        /* Top bumps */
+        .message-container::before {
+            width: 100px;
+            height: 100px;
+            top: -50px;
+            left: 80px;
+            box-shadow: 
+                -120px 20px 0 -20px #FFFFFF,
+                -60px -10px 0 -15px #FFFFFF,
+                60px 20px 0 -35px #FFFFFF,
+                120px 10px 0 -25px #FFFFFF;
+        }
+
+        /* Bottom bumps */
+        .message-container::after {
+            width: 80px;
+            height: 80px;
+            bottom: -40px;
+            right: 100px;
+            box-shadow: 
+                -140px 10px 0 -30px #FFFFFF,
+                -70px -10px 0 -20px #FFFFFF,
+                70px 10px 0 -25px #FFFFFF,
+                140px -10px 0 -35px #FFFFFF;
         }
 
         .message-content {
+            position: relative;
             font-size: 1rem;
-            margin-bottom: 1rem;
-            color: var(--text-color);
+            line-height: 1.6;
+            padding: 1.5rem;
+            z-index: 2;
         }
 
-        .message-footer {
-            display: flex;
-            justify-content: space-between;
-            color: #666;
-            font-size: 0.9rem;
-            border-top: 1px dashed rgba(0, 0, 0, 0.1);
-            padding-top: 0.75rem;
-            margin-top: 0.75rem;
-        }
-
-        .reactions {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 0.75rem;
-        }
-
-        .reaction-button {
-            display: flex;
-            align-items: center;
-            gap: 0.25rem;
-            padding: 0.4rem 0.8rem;
-            background: var(--input-background);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            font-size: 0.9rem;
-            color: var(--text-color);
-            cursor: pointer;
-            transition: all 0.2s ease;
-            user-select: none;
-        }
-
-        .reaction-button:hover {
-            background: var(--background-color);
-            transform: translateY(-1px);
-        }
-
-        .reaction-button.active {
-            background: var(--button-color);
-            color: white;
-            border-color: var(--button-color);
-        }
-
-        .reaction-count {
-            font-size: 0.85rem;
+        .message-text {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1.2rem;
+            border-radius: 25px;
+            font-family: var(--font-body);
             font-weight: 500;
-            min-width: 1rem;
-            text-align: center;
-        }
-
-        .reaction-emoji {
             font-size: 1.1rem;
-            line-height: 1;
+            line-height: 1.8;
+            letter-spacing: 0.2px;
+            color: var(--rosy-dark);
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            position: relative;
+            box-shadow: 
+                inset 2px 2px 5px rgba(255, 255, 255, 0.9),
+                inset -2px -2px 5px rgba(255, 182, 193, 0.2);
         }
 
-        .char-count {
+        /* Small decorative clouds */
+        .cloud-decoration {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            animation: floatSmall 4s ease-in-out infinite;
+        }
+
+        .cloud-decoration::before,
+        .cloud-decoration::after {
+            content: '';
+            position: absolute;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+        }
+
+        .cloud-decoration::before {
+            width: 20px;
+            height: 20px;
+            top: -10px;
+            left: 5px;
+        }
+
+        .cloud-decoration::after {
+            width: 15px;
+            height: 15px;
+            top: -5px;
+            right: 5px;
+        }
+
+        .cloud-left {
+            top: 20px;
+            left: -40px;
+            animation-delay: -1s;
+        }
+
+        .cloud-right {
+            bottom: 20px;
+            right: -40px;
+            animation-delay: -2s;
+        }
+
+        @keyframes floatSmall {
+            0%, 100% {
+                transform: translateY(0) scale(1);
+            }
+            50% {
+                transform: translateY(-5px) scale(1.1);
+            }
+        }
+
+        .reactions-container {
+            padding: 1rem 1.5rem;
+            margin-top: 1rem;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 25px;
+            position: relative;
+            z-index: 2;
+            font-family: var(--font-accent);
+            font-weight: 500;
+            box-shadow: 
+                inset 2px 2px 5px rgba(255, 255, 255, 0.9),
+                inset -2px -2px 5px rgba(255, 182, 193, 0.1);
+            border-top: 2px dashed var(--rosy-medium);
+        }
+
+        /* Sparkles */
+        .sparkle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--rosy-deep);
+            border-radius: 50%;
+            animation: sparkle 2s ease-in-out infinite;
+        }
+
+        .sparkle:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
+        .sparkle:nth-child(2) { top: 30%; right: 15%; animation-delay: 0.3s; }
+        .sparkle:nth-child(3) { bottom: 25%; left: 20%; animation-delay: 0.6s; }
+        .sparkle:nth-child(4) { bottom: 15%; right: 25%; animation-delay: 0.9s; }
+
+        @keyframes sparkle {
+            0%, 100% {
+                opacity: 0;
+                transform: scale(0);
+                background: var(--rosy-light);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1);
+                background: var(--rosy-deep);
+            }
+        }
+
+        /* Message metadata */
+        .message-metadata {
+            font-size: 0.8rem;
             color: #666;
-            font-size: 0.9rem;
-            margin-top: 0.5rem;
             text-align: right;
-        }
-
-        .error {
-            background-color: #fee2e2;
-            border: 2px solid #ef4444;
-            color: #dc2626;
-            padding: 1rem;
+            padding: 0.5rem 1rem;
+            margin-top: 0.5rem;
             border-radius: 15px;
-            margin-bottom: 1rem;
-            display: none;
+            background: rgba(255, 255, 255, 0.9);
+            font-family: var(--font-accent);
+            font-weight: 400;
+            font-size: 0.9rem;
+            letter-spacing: 0.2px;
         }
 
+        /* Responsive adjustments */
         @media (max-width: 768px) {
-            body {
+            .message-container::before {
+                width: 80px;
+                height: 80px;
+                top: -40px;
+                left: 60px;
+                box-shadow: 
+                    -90px 15px 0 -15px #FFFFFF,
+                    -45px -8px 0 -12px #FFFFFF,
+                    45px 15px 0 -25px #FFFFFF,
+                    90px 8px 0 -20px #FFFFFF;
+            }
+
+            .message-container::after {
+                width: 60px;
+                height: 60px;
+                bottom: -30px;
+                right: 75px;
+                box-shadow: 
+                    -105px 8px 0 -22px #FFFFFF,
+                    -52px -8px 0 -15px #FFFFFF,
+                    52px 8px 0 -18px #FFFFFF,
+                    105px -8px 0 -26px #FFFFFF;
+            }
+
+            .message-content {
                 padding: 1rem;
             }
 
-            .container {
-                padding: 0;
+            .message-text {
+                padding: 1rem;
             }
+        }
 
-            .message-form {
-                padding: 1.5rem;
-            }
+        /* Add cute text decorations */
+        .message-form h2 {
+            font-size: 2rem;
+            background: linear-gradient(45deg, var(--rosy-deep), var(--rosy-dark));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 2px 2px 4px rgba(255, 182, 193, 0.3);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
 
-            button {
-                width: 100%;
-            }
+        /* Add a cute dot to bullet points */
+        ul li {
+            list-style: none;
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        ul li::before {
+            content: '❥';
+            position: absolute;
+            left: 0;
+            color: var(--rosy-medium);
+            font-size: 1.2rem;
+        }
+
+        /* Add cute placeholder style */
+        input::placeholder,
+        textarea::placeholder {
+            color: var(--rosy-medium);
+            opacity: 0.7;
+            font-family: var(--font-accent);
+            font-weight: 400;
+            font-style: italic;
+        }
+
+        /* Add cute selection style */
+        ::selection {
+            background: var(--rosy-medium);
+            color: white;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-heading);
+            font-weight: 600;
+            color: var(--rosy-dark);
+            letter-spacing: 0.5px;
         }
     </style>
 </head>
 <body>
+    <div class="floating-hearts">
+        <div class="heart"></div>
+        <div class="heart"></div>
+        <div class="heart"></div>
+        <div class="heart"></div>
+        <div class="heart"></div>
+    </div>
+    <div class="sparkles">
+        <div class="sparkle-dot"></div>
+        <div class="sparkle-dot"></div>
+        <div class="sparkle-dot"></div>
+        <div class="sparkle-dot"></div>
+        <div class="sparkle-dot"></div>
+    </div>
     <div class="container">
         <div class="message-form">
             <div class="error" id="error-message"></div>
@@ -249,7 +703,9 @@
                     <label for="repository">Repository (optional)</label>
                     <input type="text" id="repository" name="repository" placeholder="owner/name">
                 </div>
-                <button type="submit" id="submit-button">Submit</button>
+                <div class="submit-wrapper">
+                    <button type="submit" id="submit-button">Submit</button>
+                </div>
             </form>
         </div>
         <div class="messages" id="messages"></div>

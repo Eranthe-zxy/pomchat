@@ -21,36 +21,79 @@ function formatDate(isoString) {
 
 // Message display
 const REACTIONS = [
-    { emoji: '👍', name: 'thumbs_up' },
+    // Positive reactions
     { emoji: '❤️', name: 'heart' },
+    { emoji: '😍', name: 'heart_eyes' },
+    { emoji: '🥰', name: 'smiling_hearts' },
+    { emoji: '😊', name: 'blush' },
+    { emoji: '🌸', name: 'flower' },
+    { emoji: '✨', name: 'sparkles' },
+    
+    // Fun reactions
     { emoji: '😄', name: 'smile' },
-    { emoji: '🎉', name: 'party' }
+    { emoji: '😆', name: 'laugh' },
+    { emoji: '🤣', name: 'rofl' },
+    { emoji: '👻', name: 'ghost' },
+    { emoji: '🎉', name: 'party' },
+    { emoji: '🎨', name: 'art' },
+    
+    // Cute reactions
+    { emoji: '🐱', name: 'cat' },
+    { emoji: '🐰', name: 'bunny' },
+    { emoji: '🦋', name: 'butterfly' },
+    { emoji: '🌈', name: 'rainbow' },
+    { emoji: '☁️', name: 'cloud' },
+    { emoji: '🎀', name: 'ribbon' },
+    
+    // Support reactions
+    { emoji: '👍', name: 'thumbs_up' },
+    { emoji: '💫', name: 'dizzy' },
+    { emoji: '💝', name: 'gift_heart' },
+    { emoji: '💭', name: 'thought' },
+    { emoji: '💫', name: 'sparkle' },
+    { emoji: '🌟', name: 'star' }
 ];
 
 function displayMessage(message) {
     const messageElement = document.createElement('div');
     messageElement.className = 'message';
     
-    const reactionsHtml = REACTIONS.map(reaction => {
-        const count = (message.reactions && message.reactions[reaction.name]) || 0;
-        return `
-            <button class="reaction-button" 
-                    data-reaction="${reaction.name}" 
-                    data-message-id="${message.id}">
-                <span class="reaction-emoji">${reaction.emoji}</span>
-                <span class="reaction-count">${count}</span>
-            </button>
-        `;
-    }).join('');
+    // Create two rows of reactions
+    const firstRowReactions = REACTIONS.slice(0, 12);
+    const secondRowReactions = REACTIONS.slice(12);
 
-    messageElement.innerHTML = `
+    const createReactionRow = (reactions) => {
+        return reactions.map(reaction => {
+            const count = (message.reactions && message.reactions[reaction.name]) || 0;
+            return `
+                <button class="reaction-button" 
+                        data-reaction="${reaction.name}" 
+                        data-message-id="${message.id}">
+                    <span class="reaction-emoji">${reaction.emoji}</span>
+                    <span class="reaction-count">${count}</span>
+                </button>
+            `;
+        }).join('');
+    };
+
+    // Add envelope flap decoration
+    const decoration = document.createElement('div');
+    decoration.className = 'message-decoration';
+    messageElement.appendChild(decoration);
+
+    const contentWrapper = document.createElement('div');
+    contentWrapper.innerHTML = `
         <div class="message-content">${escapeHtml(message.content)}</div>
-        <div class="reactions">${reactionsHtml}</div>
+        <div class="reactions-container">
+            <div class="reactions reactions-row">${createReactionRow(firstRowReactions)}</div>
+            <div class="reactions reactions-row">${createReactionRow(secondRowReactions)}</div>
+        </div>
         <div class="message-footer">
             <span>${escapeHtml(message.author)}</span>
             <span>${formatDate(message.timestamp)}</span>
         </div>
     `;
+    messageElement.appendChild(contentWrapper);
 
     messageElement.querySelectorAll('.reaction-button').forEach(button => {
         button.addEventListener('click', handleReaction);
